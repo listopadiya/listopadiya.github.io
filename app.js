@@ -20,51 +20,33 @@ async function fetchConstants() {
   }
 }
 
-//Function to fetch constants and populate pot type dropdown menu
-async function populatePottype() {
+//Function to fetch constants and populate dropdown menues
+async function populateData() {
   const data = await fetchConstants();
   if (!data) return;
 
-  const dropdown = document.getElementById("potType");
+  const dropdownPot = document.getElementById("potType");
+  const dropdownPlant = document.getElementById("plantType");
+  const dropdownSeason = document.getElementById("season");
+  
   for (let i = 0; i < data.length; i++) {
+	
     if(data[i].datatype === "pot") {
       var option = document.createElement("option");
       option.text = data[i].name;
       option.value = data[i].name;
-      dropdown.add(option);
-    }
-  }
-}
-
-//Function to fetch constants and populate plant type dropdown menu
-async function populatePlantType() {
-  const data = await fetchConstants();
-  if (!data) return;
-
-  const dropdown = document.getElementById("plantType");
-  for (let i = 0; i < data.length; i++) {
-    if(data[i].datatype === "species") {
+      dropdownPot.add(option);
+    } else if (data[i].datatype === "species") {
       var option = document.createElement("option");
       option.text = data[i].name;
-      option.value = data[i].name;
-      dropdown.add(option);
-    }
-  }
-}
-
-//Function to fetch constants and populate season dropdown menu
-async function populateSeason() {
-  const data = await fetchConstants();
-  if (!data) return;
-
-  const dropdown = document.getElementById("season");
-  for (let i = 0; i < data.length; i++) {
-    if(data[i].datatype === "season") {
+      option.value = data[i].name;		
+      dropdownPlant.add(option);
+    } else if(data[i].datatype === "season") {
       var option = document.createElement("option");
       option.text = data[i].name;
-      option.value = data[i].name;
-      dropdown.add(option);
-    }
+      option.value = data[i].name;		
+	  dropdownSeason.add(option);
+	}
   }
 }
 
@@ -173,11 +155,7 @@ async function findRecommendations(potVolume, potType, plantType, season) {
   outputSection.style.display = "block";
 }
 
-document.addEventListener("DOMContentLoaded", function() {
-  populatePottype()
-  populatePlantType()
-  populateSeason()
-});
+document.addEventListener("DOMContentLoaded", populateData);
 
 // Event listener for the calculate button
 document.getElementById('calculateButton').addEventListener('click', function() {
