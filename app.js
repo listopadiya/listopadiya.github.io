@@ -1,10 +1,9 @@
-let constantsData = [];
-let constantsByType = { pot: new Map(), species: new Map(), season: new Map() };
-let dataset = [];
+let constants = null;
+let dataset = null;
 
 // Function to fetch and process data from 'data.json'
 async function fetchData() {
-  if (dataset.length > 0) return dataset;
+  if (dataset !== null) return dataset;
   try {
     const res = await fetch('data.json');
     dataset = await res.json();
@@ -17,18 +16,18 @@ async function fetchData() {
 
 // Function to fetch and process constants from 'constants.json'
 async function fetchConstants() {
-  if (constantsData.length > 0) return constantsData;
+  if (constants !== null) return constants;
+  const constants = { pot: new Map(), species: new Map(), season: new Map() }
   try {
     const res = await fetch('constants.json');
-    constantsData = await res.json();
-    constantsData.forEach(item => {
-      constantsByType[item.datatype].set(item.name, item);
+    data = await res.json();
+    data.forEach(item => {
+      constants[item.datatype].set(item.name, item);
     });
-    return constantsData;
   } catch (error) {
     console.error('Error fetching data:', error);
-    return [];
   }
+  return constants;
 }
 
 //Function to fetch constants and populate dropdown menues
@@ -39,13 +38,13 @@ async function populateData() {
   const dropdownPlant = document.getElementById("plantType");
   const dropdownSeason = document.getElementById("season");
   
-  constantsByType.pot.forEach((val, key) => {
+  data.pot.forEach((val, key) => {
     dropdownPot.add(new Option(key, key));
   });
-  constantsByType.species.forEach((val, key) => {
+  data.species.forEach((val, key) => {
     dropdownPlant.add(new Option(key, key));
   });
-  constantsByType.season.forEach((val, key) => {
+  data.season.forEach((val, key) => {
     dropdownSeason.add(new Option(key, key));
   });
 }
@@ -53,33 +52,20 @@ async function populateData() {
 //Function to calculate water and fertilizer recommendations
 async function calculateRecommendations(potVolume, potType, plantType, season) {
   const data = await fetchConstants();
-  if (!data) return;
 
-  let potdata
-  let speciesdata
-  let seasondata
+  const potdata = data.pot.get(potType);
+  const seasondata = data.season.get(season);
 
-  for (let i = 0; i < data.length; i++) {
-    if(data[i].datatype === "pot" && data[i].name === potType) {
-      potdata = data[i]
-    } else if(data[i].datatype === "species" && data[i].name === plantType) {
-      speciesdata = data[i]
-    } else if(data[i].datatype === "season" && data[i].name === season) {
-      seasondata = data[i]
-    }
-  } 
- 
-  let water = potVolume * 0.0001 * potdata.datafield_1 * seasondata.datafield_1
-  let fertilizer = water * seasondata.datafield_2
+  const water = potVolume * 0.0001 * potdata.datafield_1 * seasondata.datafield_1;
+  const fertilizer = water * seasondata.datafield_2;
 
   document.getElementById('recommendedWater').textContent = `${water.toFixed(1)} liters`;
-  document.getElementById('recommendedFertilizer').textContent = `${fertilizer.toFixed(2)} units`;
+  document.getElementById('recommendedFertilizer').textContent = `${fertilizer.toFixed(2)} units`;  
 }
 
 // Function to search recommendations data and calculate statistics based on it and user inputs
 async function findRecommendations(potVolume, potType, plantType, season) {
   const data = await fetchData();
-  if (!data) return;
 
   let similarCount = 0
   let similarwaterCount = 0
