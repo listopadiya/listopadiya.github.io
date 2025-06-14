@@ -1,7 +1,7 @@
 body {
   margin: 0;
   padding: 0;
-  background-image: url('bgimage.jpg');
+  background-image: url('bgimage-768.webp');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -13,6 +13,18 @@ body {
   color: rgb(3, 3, 3);
   font-family: Arial, sans-serif;
   font-size: small;
+}
+
+@media (min-width: 1024px) {
+  body {
+    background-image: url('bgimage-1280.webp');
+  }
+}
+
+@media (min-width: 1440px) {
+  body {
+    background-image: url('bgimage-1920.webp');
+  }
 }
 
 #header {
