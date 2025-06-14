@@ -17,17 +17,18 @@ async function fetchData() {
 // Function to fetch and process constants from 'constants.json'
 async function fetchConstants() {
   if (constants !== null) return constants;
-  const constants = { pot: new Map(), species: new Map(), season: new Map() }
+  const newConstants = { pot: new Map(), species: new Map(), season: new Map() }
   try {
     const res = await fetch('constants.json');
     data = await res.json();
     data.forEach(item => {
-      constants[item.datatype].set(item.name, item);
+      newConstants[item.datatype].set(item.name, item);
     });
   } catch (error) {
     console.error('Error fetching data:', error);
   }
-  return constants;
+  constants = newConstants;
+  return newConstants;
 }
 
 //Function to fetch constants and populate dropdown menues
