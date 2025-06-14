@@ -68,12 +68,6 @@ async function populateSeason() {
   }
 }
 
-function initialize() {
-  populatePottype()
-  populatePlantType()
-  populateSeason()
-
-}
 function calculatePotVolume(diameter, height) {
   const radius = diameter / 2;
   return Math.PI * Math.pow(radius, 2) * height;
@@ -178,6 +172,12 @@ async function findRecommendations(potVolume, potType, plantType, season) {
   let outputSection = document.getElementById("outputSection");
   outputSection.style.display = "block";
 }
+
+document.addEventListener("DOMContentLoaded", function() {
+  populatePottype()
+  populatePlantType()
+  populateSeason()
+});
 
 // Event listener for the calculate button
 document.getElementById('calculateButton').addEventListener('click', function() {
